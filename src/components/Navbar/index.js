@@ -51,13 +51,17 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
+    root: {
+        height: 50,
+        minHeight: 50,
+    },
 }));
 
 const Navbar = ({ search }) => {
     const classes = useStyles();
     return (
-        <AppBar position="static">
-            <Toolbar>
+        <AppBar position="static" classes={{ root: classes.root }}>
+            <Toolbar classes={{ root: classes.root }}>
                 <IconButton
                     edge="start"
                     className={classes.menuButton}
@@ -65,7 +69,7 @@ const Navbar = ({ search }) => {
                     aria-label="open drawer"
                 ></IconButton>
                 <Typography className={classes.title} variant="h6" noWrap>
-                    All-Users
+                    Phonebook
                 </Typography>
                 <div className={classes.search}>
                     <div className={classes.searchIcon}></div>

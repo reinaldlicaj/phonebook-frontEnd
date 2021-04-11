@@ -1,15 +1,23 @@
+import Numbers, { emptyNumber } from "./Numbers";
+
+export const emptyUser = {
+    id: null,
+    firstName: "",
+    lastName: "",
+    numbers: [emptyNumber, emptyNumber],
+};
 class User {
     firstName;
     lastName;
-    privateNumber;
-    workNumber;
+    numbers;
     id;
-    constructor(id, firstName, lastName, privateNumber, workNumber) {
+    constructor(id, firstName, lastName, numbers) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.privateNumber = privateNumber;
-        this.workNumber = workNumber;
+        this.numbers = numbers.map((number) => {
+            return new Numbers(number.number, number.numberType);
+        });
     }
 }
 

@@ -1,45 +1,29 @@
 import { useEffect, useState } from "react";
 import { getAllUsers } from "../services";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Modal,
-    Button,
-    TablePagination,
-} from "@material-ui/core/";
-import { Edit, Delete } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import { Modal, Button, TablePagination } from "@material-ui/core/";
 import Navbar from "./Navbar";
 import EditModal from "./Modals/EditModal";
 import DeleteModal from "./Modals/DeleteModal";
+import TableIndex from "./Table";
+import { emptyUser } from "../entities/User";
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        "&:nth-of-type(odd)": {
-            backgroundColor: theme.palette.action.hover,
-        },
-        "& > *": {
-            margin: theme.spacing(1),
-            width: "25ch",
-        },
-    },
-}))(TableRow);
 const useStyles = makeStyles((theme) => ({
+    app: {
+        height: "100vh",
+        maxHeight: "100vh",
+        display: "grid",
+        gridTemplateRows: "min-content min-content 1fr",
+        gap: 10,
+    },
+    buttonWrapper: {
+        display: "grid",
+        justifyContent: "end",
+        paddingRight: 15,
+    },
+    addButton: {
+        width: 200,
+    },
     modal: {
         position: "absolute",
         width: 400,
@@ -60,14 +44,11 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
+    main: {
+        padding: 15,
+        paddingBottom: 0,
+    },
 }));
-
-const emptyUser = {
-    firstName: "",
-    lastName: "",
-    privateNumber: "",
-    workNumber: "",
-};
 
 const App = () => {
     const classes = useStyles();
@@ -76,6 +57,8 @@ const App = () => {
     const [modalInsert, setModalInsert] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [userSelected, setUserSelected] = useState(emptyUser);
+    const [page, setPage] = useState(1);
+
 
     const openEditModal = () => {
         if (modalInsert) setUserSelected(emptyUser);
@@ -94,96 +77,48 @@ const App = () => {
 
     useEffect(() => {
         const fetch = async () => {
-            const usersResponse = await getAllUsers();
+            const usersResponse = await getAllUsers(page);
+            console.log(usersResponse)
             setUsers(usersResponse);
         };
         fetch();
-    }, []);
+    }, [page]);
 
     return (
-        <div>
+        <div className={classes.app}>
             <div className={classes.root}>
                 <Navbar search={setSearch} />
             </div>
-
-            <br />
-
-            <Button variant="contained" color="primary" onClick={openEditModal}>
-                Add
-            </Button>
-            <br />
-            <br />
-
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>First Name</StyledTableCell>
-                            <StyledTableCell align="right">Last Name</StyledTableCell>
-                            <StyledTableCell align="right">Private Number</StyledTableCell>
-                            <StyledTableCell align="right">Work Number</StyledTableCell>
-                            <StyledTableCell align="right"></StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users
-                            .filter((user) => {
-                                if (search === "") {
-                                    return user;
-                                } else if (user.firstName.toLowerCase().includes(search.toLowerCase())) {
-                                    return user;
-                                }
-                            })
-                            .map((user) => {
-                                return (
-                                    <StyledTableRow key={user.id}>
-                                        <StyledTableCell component="th" scope="row">
-                                            {user.firstName}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="right">{user.lastName}</StyledTableCell>
-                                        <StyledTableCell align="right">{user.privateNumber}</StyledTableCell>
-                                        <StyledTableCell align="right">{user.workNumber}</StyledTableCell>
-                                        <StyledTableCell align="right">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                className={classes.button}
-                                                startIcon={<Edit />}
-                                                onClick={() => selectUser(user, true)}
-                                            >
-                                                Edit{" "}
-                                            </Button>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <Button
-                                                variant="contained"
-                                                color="secondary"
-                                                className={classes.button}
-                                                startIcon={<Delete />}
-                                                onClick={() => selectUser(user, false)}
-                                            >
-                                                Delete{" "}
-                                            </Button>
-                                        </StyledTableCell>
-                                    </StyledTableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Modal open={modalInsert} onClose={openEditModal}>
-                <EditModal users={users} setUsers={setUsers} close={openEditModal} selectedUser={userSelected} />
-            </Modal>
-            <Modal open={modalDelete} onClose={openDeleteModal}>
-                <DeleteModal users={users} setUsers={setUsers} close={openDeleteModal} selectedUser={userSelected} />
-            </Modal>
-            <TablePagination
-                component="div"
-                count={100}
-                page={""}
-                onChangePage={""}
-                rowsPerPage={""}
-                onChangeRowsPerPage={""}
-            />
+            <div className={classes.buttonWrapper}>
+                <Button variant="contained" color="primary" onClick={openEditModal} className={classes.addButton}>
+                    Add
+                </Button>
+            </div>
+            <div className={classes.main}>
+                <TableIndex users={users} selectUser={selectUser} search={search} setUsers={setUsers}/>
+                <Modal open={modalInsert} onClose={openEditModal}>
+                    <EditModal users={users} setUsers={setUsers} close={openEditModal} selectedUser={userSelected} />
+                </Modal>
+                <Modal open={modalDelete} onClose={openDeleteModal}>
+                    <DeleteModal
+                        users={users}
+                        setUsers={setUsers}
+                        close={openDeleteModal}
+                        selectedUser={userSelected}
+                    />
+                </Modal>
+                <TablePagination
+                    component="div"
+                    count={100}
+                    page={page}
+                    onChangePage={(e, newPage) => {
+                        setPage(newPage);
+                    }}
+                    onpage
+                    rowsPerPage={10}
+                    onChangeRowsPerPage={""}
+                />
+            </div>
         </div>
     );
 };
