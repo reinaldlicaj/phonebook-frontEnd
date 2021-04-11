@@ -59,7 +59,6 @@ const App = () => {
     const [userSelected, setUserSelected] = useState(emptyUser);
     const [page, setPage] = useState(1);
 
-
     const openEditModal = () => {
         if (modalInsert) setUserSelected(emptyUser);
         setModalInsert(!modalInsert);
@@ -78,7 +77,7 @@ const App = () => {
     useEffect(() => {
         const fetch = async () => {
             const usersResponse = await getAllUsers(page);
-            console.log(usersResponse)
+            console.log(usersResponse);
             setUsers(usersResponse);
         };
         fetch();
@@ -95,7 +94,7 @@ const App = () => {
                 </Button>
             </div>
             <div className={classes.main}>
-                <TableIndex users={users} selectUser={selectUser} search={search} setUsers={setUsers}/>
+                <TableIndex users={users} selectUser={selectUser} search={search} setUsers={setUsers} />
                 <Modal open={modalInsert} onClose={openEditModal}>
                     <EditModal users={users} setUsers={setUsers} close={openEditModal} selectedUser={userSelected} />
                 </Modal>
@@ -112,9 +111,8 @@ const App = () => {
                     count={100}
                     page={page}
                     onChangePage={(e, newPage) => {
-                        setPage(newPage);
+                        if (newPage >= 1) setPage(newPage);
                     }}
-                    onpage
                     rowsPerPage={10}
                     onChangeRowsPerPage={""}
                 />

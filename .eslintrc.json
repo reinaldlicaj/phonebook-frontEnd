@@ -14,7 +14,6 @@
     "rules": {
         "prefer-const": 2,
         "complexity": ["warn", { "max": 11 }],
-        "no-console": "warn",
         "max-len": [
             "error",
             {

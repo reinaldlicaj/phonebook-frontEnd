@@ -18,8 +18,8 @@ export const getAllUsers = async (pageNumber = 1, size = 10, sort = 1) => {
 
 export const createUser = async (user) => {
     try {
-        const response =  await axios.post(BASE_URL, user);
-        return response.data.id
+        const response = await axios.post(BASE_URL, user);
+        return response.data.id;
     } catch (err) {
         console.log(err.message);
     }
