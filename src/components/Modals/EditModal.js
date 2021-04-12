@@ -39,7 +39,7 @@ const EditModal = ({ users, setUsers, close, selectedUser }) => {
 
     const handleCreate = async () => {
         const id = await createUser(userSelected);
-        setUsers([...users, {...userSelected, id}]);
+        setUsers([...users, { ...userSelected, id }]);
         debugger;
         close();
     };
@@ -182,7 +182,11 @@ const EditModal = ({ users, setUsers, close, selectedUser }) => {
             <br />
             <br />
             <div align="right">
-                <Button color="primary" onClick={() => createOrUpdate()}>
+                <Button
+                    color="primary"
+                    onClick={() => createOrUpdate()}
+                    disabled={userSelected.firstName === "" || userSelected.lastName===""||userSelected.numbers[0].number===""||userSelected.numbers[1].number===""}
+                >
                     Confirm
                 </Button>
                 <Button onClick={() => close()}>Cancel</Button>
