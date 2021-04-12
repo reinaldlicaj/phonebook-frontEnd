@@ -185,7 +185,12 @@ const EditModal = ({ users, setUsers, close, selectedUser }) => {
                 <Button
                     color="primary"
                     onClick={() => createOrUpdate()}
-                    disabled={userSelected.firstName === "" || userSelected.lastName===""||userSelected.numbers[0].number===""||userSelected.numbers[1].number===""}
+                    disabled={
+                        userSelected.firstName === "" ||
+                        userSelected.lastName === "" ||
+                        userSelected.numbers[0].number === "" ||
+                        userSelected.numbers[1].number === ""
+                    }
                 >
                     Confirm
                 </Button>
